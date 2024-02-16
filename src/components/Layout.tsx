@@ -1,13 +1,14 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
-import NavBar from "./navbar/NavBar";
+import Navbar from "./navbar/Navbar";
+
 
 const Layout = () => {
   return (
-    <>
-    <NavBar />
+    <div className="pt-20 min-h-screen ">
+      <Navbar />
       <Outlet />
-    </>
+    </div>
   );
 };
 

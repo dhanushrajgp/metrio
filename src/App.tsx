@@ -1,11 +1,10 @@
-import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { Counter } from "./components/counter/Counter";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./components/Home";
 import NoPage from "./components/NoPage";
+import Formcontainer from "./components/form/formcontainer/Formcontainer";
 
 function App() {
   return (
@@ -14,6 +13,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="counter" element={<Counter />} />
+          <Route path="forms" element={<Formcontainer />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>

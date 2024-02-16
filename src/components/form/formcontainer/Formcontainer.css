@@ -1,0 +1,16 @@
+.Formcontainer{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: center;
+    background-color: beige;
+    gap: 50px;
+    padding: 10px 0px;  
+}
+.Create-btn{
+    cursor: pointer;
+    background-color: black;
+    padding: 5px;
+    color: white;
+    border-radius: 10px;
+}
