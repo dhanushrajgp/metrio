@@ -40,8 +40,8 @@ const Formcreate = () => {
   return (
     <div className="Formcreate">
       <Modal>
-        <Paper className=" border-4 border-dotted shadow-none outline-none p-2">
-          <h2>Form Demo</h2>
+        <Paper className=" border-4 border-dotted shadow-none outline-none p-2 flex flex-col gap-4">
+          <h2>Create Form</h2>
           <TextField
             onChange={(e) => setName(e.target.value)}
             value={name}

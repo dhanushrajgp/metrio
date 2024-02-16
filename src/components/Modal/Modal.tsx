@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Modal.css";
+import { ModalContext } from "../../providers/Modalcontext";
 
 export const Modal = ({ children }: { children?: React.ReactNode }) => {
-  const [showModal, setShowModal] = useState(false);
-
-  const [bodyOverflow, setBodyOverflow] = useState("");
+ 
+  const { showModal, setShowModal, bodyOverflow, setBodyOverflow } = React.useContext<any>(ModalContext as React.Context<any>);
 
   useEffect(() => {
     if (showModal) {

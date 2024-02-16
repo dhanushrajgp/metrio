@@ -1,6 +1,6 @@
 
 export interface Form {
-    id: number;
+    id: number | string;
     name: string;
     tags:FormTags[]
 }

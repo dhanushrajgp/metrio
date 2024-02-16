@@ -11,6 +11,7 @@ import {
   getForms,
 } from "../../../reduxstore/features/forms/formsSlice";
 import Formcreate from "../formcreation/Formcreate";
+import Formview from "../formview/Formview";
 
 const Formcontainer = () => {
   const dispatch = useAppDispatch();
@@ -28,10 +29,10 @@ const Formcontainer = () => {
   return (
     <div className="Formcontainer">
       {forms?.map((form: Form) => {
-        return <Formcard key={form?.id} formName={form?.name} />;
+        return <Formcard key={form?.id} formName={form?.name} id={form?.id} />;
       })}
-
       <Formcreate />
+
     </div>
   );
 };
