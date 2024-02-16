@@ -4,8 +4,8 @@ import { ModalContext } from "../../providers/Modalcontext";
 
 export const Modal = ({ children }: { children?: React.ReactNode }) => {
  
-  const { showModal, setShowModal, bodyOverflow, setBodyOverflow } = React.useContext<any>(ModalContext as React.Context<any>);
-
+  const { showModal, setShowModal } = React.useContext<any>(ModalContext as React.Context<any>);
+  const [bodyOverflow, setBodyOverflow] = useState("");
   useEffect(() => {
     if (showModal) {
       setBodyOverflow(document.body.style.overflow);

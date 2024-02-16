@@ -20,7 +20,7 @@ const Formcard = ({
   const form = useAppSelector((state) => state.forms.form);
   console.log(form);
 
-  const { showModal, setShowModal, bodyOverflow, setBodyOverflow } = React.useContext<any>(ModalContext as React.Context<any>);
+  const { showModal, setShowModal } = React.useContext<any>(ModalContext as React.Context<any>);
   const getFormDetails = useCallback(() => {
     dispatch(fetchForm({ id }));
     setShowModal(true);
