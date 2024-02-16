@@ -1,0 +1,23 @@
+
+#Modalbackground{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow-y: hidden;
+}
+
+#Modalcontent{
+    margin: 12% auto;
+    padding: 24px;
+    overflow-y: auto;
+    width: 50%;
+}
+
+@media screen and (max-width: 1024px){
+    #Modalcontent{
+        width: 100%;
+    } 
+}
