@@ -20,6 +20,12 @@
             "Commercial",
             "Industrial"
           ]
+        },
+        {
+          "name": "newtag",
+          "choices": [
+            "sad"
+          ]
         }
       ]
     },
@@ -36,26 +42,6 @@
           ]
         }
       ]
-    },
-    {
-      "id": "3",
-      "name": "new form",
-      "tags": []
-    },
-    {
-      "id": "4",
-      "name": "ads",
-      "tags": []
-    },
-    {
-      "id": "5",
-      "name": "asda",
-      "tags": []
-    },
-    {
-      "id": "6",
-      "name": "ddhd",
-      "tags": []
     }
   ],
   "data": [

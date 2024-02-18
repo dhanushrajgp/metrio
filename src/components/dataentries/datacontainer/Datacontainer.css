@@ -1,0 +1,17 @@
+.Datacontainer{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: center;
+    gap: 50px;
+    padding: 10px 10px;  
+    width: 50%;
+    margin: auto;
+}
+
+@media screen and (max-width: 1024px){
+    .Datacontainer{
+        width: 100%;
+       
+    } 
+}

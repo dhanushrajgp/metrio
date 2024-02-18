@@ -1,0 +1,11 @@
+.Formcreate{
+    padding: 10px;
+    width: 50%;
+    margin:  auto;
+}
+
+@media screen and (max-width: 1024px){
+    .Formcreate{
+        width: 100%;
+    } 
+}

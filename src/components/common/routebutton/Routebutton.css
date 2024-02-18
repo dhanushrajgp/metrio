@@ -1,0 +1,12 @@
+.Routebutton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 5px;
+    height: fit-content;
+  
+    color: white;
+    font-size:large;
+    border-radius: 10px;
+}
