@@ -124,7 +124,7 @@ const Dataentriescreate = () => {
             onChange={handleChange}
             label="selectFormSchema"
           >
-            {forms.map((item, index) => {
+            {forms?.map((item, index) => {
               return (
                 <MenuItem value={item?.id} key={index}>
                   {item?.name}
