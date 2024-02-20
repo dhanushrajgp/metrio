@@ -2,36 +2,24 @@ import React, { useContext, useEffect, useState } from "react";
 
 import "./Datacontainer.css";
 import { DataEntries, Form } from "../../../types/forms";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../reduxstore/hooks/hooks";
-import {
-  fetchAllData,
-  fetchForms,
-  getAllData,
-  getForms,
-} from "../../../reduxstore/features/forms/formsSlice";
+import { useAppDispatch, useAppSelector } from "../../../reduxstore/hooks/hooks";
 import Datacard from "../datacard/Datacard";
 import Nodatafound from "../../common/nodatafound/Nodatafound";
+import { useResource } from "../../../hooks/useResource";
+import { fetchAllDataEntriesAPI } from "../../../api/dataentriesapi";
+import SkeletonLoader from "../../common/loader/SkeletonLoader";
+import ErrorHandler from "../../common/errorhandler/Errorhandler";
+import { fetchAllData, getAllData, getDataEntries, getNetworkStatus } from "../../../reduxstore/features/forms/formsSlice";
+import { useGetAllResource } from "../../../hooks/useGetAllResource";
 
 const Datacontainer = () => {
-  const dispatch = useAppDispatch();
+  useGetAllResource(fetchAllData())
+  const dataStatus = useAppSelector(getNetworkStatus);
   const data = useAppSelector(getAllData);
-  const [requestStatus, setRequestStatus] = useState("idle");
-  const formsStatus = useAppSelector((state) => state.forms.status);
-
-  useEffect(() => {
-    if (requestStatus === "idle") {
-      dispatch(fetchAllData());
-      setRequestStatus("completed");
-    }
-  }, [requestStatus, dispatch]);
-
   return (
     <div className="Datacontainer">
-      {
-        data?.length > 0 ?
+        <div className="FormTitle">DATA ENTRIES</div>
+      {data?.length > 0 ? (
         data?.map((item: DataEntries) => {
           return (
             <Datacard
@@ -44,13 +32,13 @@ const Datacontainer = () => {
             />
           );
         })
-        :
-        formsStatus == "failed" ?
-        <Nodatafound content="503 SERVICE UNAVAILABLE. CONNECT SERVER TO FETCH THE DATA"/> :
-        <Nodatafound content="NO DATA ENTRIES FOUND" redirectPath="/createdata" />
-        
-      }
-      
+      ) : (
+        <ErrorHandler
+          content="NO DATA ENTRIES FOUND"
+          redirectPath="createdata"
+          requestStatus={dataStatus}
+        />
+      )}
     </div>
   );
 };

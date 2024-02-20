@@ -1,7 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
-import Home from "./components/Home";
 import NoPage from "./components/NoPage";
 import Formcontainer from "./components/form/formcontainer/Formcontainer";
 import Formcreate from "./components/form/formcreation/Formcreate";
@@ -9,6 +8,7 @@ import Dataentriescreate from "./components/dataentries/dataentriescreation/Data
 import Datacontainer from "./components/dataentries/datacontainer/Datacontainer";
 import Formview from "./components/form/formview/Formview";
 import Formedit from "./components/form/formedit/Formedit";
+import Dataentriesedit from "./components/dataentries/dataedit/Dataedit";
 
 function App() {
   return (
@@ -20,7 +20,9 @@ function App() {
             <Route path="/createform" element={<Formcreate />} />
             <Route path="/viewform" element={<Formview />}></Route>
             <Route path="/editform" element={<Formedit />}></Route>
+            <Route path="/editform" element={<Formedit />}></Route>
             <Route path="/createdata" element={<Dataentriescreate />} />
+            <Route path="/editdata" element={<Dataentriesedit />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>

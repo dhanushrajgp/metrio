@@ -1,46 +1,39 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Formedit.css";
 import {
-  useAppDispatch,
   useAppSelector,
 } from "../../../reduxstore/hooks/hooks";
-import {
-  addNewForm,
-  fetchForm,
-  getForm,
-  getFormsLength,
-  updateForm,
-} from "../../../reduxstore/features/forms/formsSlice";
 import { Button, Paper, TextField } from "@mui/material";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Close } from "@mui/icons-material";
 import { Form, FormTags } from "../../../types/forms";
+import { useResource } from "../../../hooks/useResource";
+import { fetchFormAPI, updateFormAPI } from "../../../api/formsapi";
+import { useUpdateResource } from "../../../hooks/useUpdateResource";
 
 interface MyObject {
   [key: string]: string[];
 }
-interface TagArray {
-  name: string;
-  choices: string[];
-}
 
 const Formedit = () => {
+
   const formId = JSON.parse(localStorage?.getItem("formId") as string);
-  const form = useAppSelector(state=> state.forms.form) as Form;
+  const { data } = useResource(
+    fetchFormAPI(formId?.id)
+  ) as unknown as { requestStatus: string; data: Form };
+
   useEffect(() => {
-    dispatch(fetchForm({ id: formId?.id }));
-    console.log("form", form);
     let initialTags = {};
-    form?.tags?.map((item: FormTags) => {
+    data?.tags?.map((item: FormTags) => {
       Object.assign(initialTags, {
         ...initialTags,
         [item?.name]: item?.choices,
       });
     });
-    setName(form.name);
+    setName(data.name);
     setTagNames(initialTags);
-    setTags(form.tags);
-  }, []);
+    setTags(data.tags);
+  }, [data]);
 
   const [name, setName] = useState("");
   const [tags, setTags] = useState<FormTags[]>([]);
@@ -48,11 +41,11 @@ const Formedit = () => {
   const [tagName, setTagName] = useState("");
   const [tagSelected, setTagSelected] = useState("");
   const [choiceName, setChoiceName] = useState("");
-
   const [addRequestStatus, setAddRequestStatus] = useState("idle");
-  const formsStatus = useAppSelector((state) => state.forms.status);
-  const dispatch = useAppDispatch();
 
+
+
+  const formsStatus = useAppSelector((state) => state.forms.status);
   const canSave = [name, tags].every(Boolean) && addRequestStatus === "idle";
   const navigate = useNavigate();
 
@@ -66,6 +59,7 @@ const Formedit = () => {
     }
     return tagArray;
   };
+  const {updateData} = useUpdateResource();
 
   const onSaveFormClicked = async () => {
     const tagArray = handleObjectToArray();
@@ -75,11 +69,7 @@ const Formedit = () => {
     if (canSave) {
       try {
         setAddRequestStatus("pending");
-        await dispatch(
-          updateForm({ id: formId, name, tags: tagArray })
-        ).unwrap();
-        setName("");
-        setTags([]);
+        updateData(updateFormAPI(formId?.id,{id: formId?.id, name, tags: tagArray}))
         navigate("/");
       } catch (err) {
         console.error("Failed to save the form: ", err);
@@ -96,14 +86,14 @@ const Formedit = () => {
   const handleAddChoices = () => {
     setTagNames({
       ...tagNames,
-      [tagName]: [...(tagNames[tagName] || []), choiceName],
+      [tagSelected]: [...(tagNames[tagName] || []), choiceName],
     });
   };
 
   return (
     <div className="Formcreate">
       <Paper className=" border-4 border-dotted shadow-none outline-none p-2 flex flex-col gap-4">
-        <h2>Edit Form</h2>
+      <div className="FormTitle">EDIT FORM SCHEMA</div>
         <TextField
           onChange={(e) => setName(e.target.value)}
           value={name}
@@ -176,10 +166,9 @@ const Formedit = () => {
                     const updatedArray = tagNames?.[tagSelected]?.filter(
                       (currentItem) => currentItem != item
                     );
-                    console.log("updatedArray", updatedArray);
                     setTagNames({
                       ...tagNames,
-                      [tagName]: updatedArray,
+                      [tagSelected]: updatedArray,
                     });
                   }}
                 >

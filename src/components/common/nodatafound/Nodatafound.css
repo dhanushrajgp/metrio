@@ -1,10 +1,19 @@
 .Nodatafound{
     display: flex;
-    min-height: 50vh;
+    min-height: 20vh;
+    max-width: 50%;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    font-size: xx-large;
+    font-size: x-large;
+    font-family: 'Courier New', Courier, monospace;
+    margin: auto;
     width: 100%;
     text-align: center;
+    padding: 5px;
+    border:4px dotted rgb(0, 136, 255);
+    background-color:rgba(2, 110, 204, 0.79) ;
+    color: white;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }

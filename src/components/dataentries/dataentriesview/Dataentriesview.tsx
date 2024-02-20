@@ -5,19 +5,20 @@ import { DataEntries } from "../../../types/forms";
 import "./Dataentriesview.css";
 import Datacard from "../datacard/Datacard";
 import Nodatafound from "../../common/nodatafound/Nodatafound";
+import { useResource } from "../../../hooks/useResource";
+import { fetchFormDataEntriesAPI } from "../../../api/dataentriesapi";
 
 const Dataentriesview = () => {
-  const data = useAppSelector(getDataEntries) as DataEntries[];
-  console.log("data", data);
 
+  const formId = JSON.parse(localStorage?.getItem("formId") as string);
+  const {data} = useResource(fetchFormDataEntriesAPI(formId?.id)) as unknown as {data:DataEntries[]};
   return (
     <>
       {data?.length > 0 ? (
         <div className="DataEntriesView">
           <div className="Datafilter">DataFilter</div>
-
           <div className="Datacardcontainer">
-            {data?.map((item, index) => {
+            {data?.map((item:DataEntries, index:number) => {
               return (
                 <Datacard
                   date={item?.date}

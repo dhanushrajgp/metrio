@@ -6,6 +6,7 @@
     width: 100%;
     overflow-y: auto;
     position: relative;
+    margin-top: 10px;
     padding-bottom: 50px;
     gap: 2px;
 }

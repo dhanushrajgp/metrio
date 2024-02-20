@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import "./Dataentriescreate.css";
+import "./Dataedit.css";
 import { useNavigate } from "react-router-dom";
-import { Form } from "../../../types/forms";
+import { DataEntries, Form } from "../../../types/forms";
 import {
   useAppDispatch,
   useAppSelector,
 } from "../../../reduxstore/hooks/hooks";
 import {
+  addNewDataEntry,
   fetchAllData,
   fetchForm,
   fetchForms,
@@ -29,11 +30,26 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useCreateResource } from "../../../hooks/useCreateResource";
-import { createDataAPI } from "../../../api/dataentriesapi";
+import { useResource } from "../../../hooks/useResource";
+import { fetchDataAPI, updateDataEntryAPI } from "../../../api/dataentriesapi";
+import { useUpdateResource } from "../../../hooks/useUpdateResource";
+import { APISTATUS } from "../../../utils/helper";
+import { useGetAllResource } from "../../../hooks/useGetAllResource";
 
-const Dataentriescreate = () => {
-  const [name, setName] = useState("");
+const Dataentriesedit = () => {
+  const dataEntryId = JSON.parse(
+    localStorage?.getItem("dataEntryId") as string
+  );
+  const {
+    data: dataentrydata,
+    requestStatus,
+    setRequestStatus,
+  } = useResource(fetchDataAPI(dataEntryId?.id)) as unknown as {
+    requestStatus: string;
+    data: DataEntries;
+    setRequestStatus: React.Dispatch<React.SetStateAction<APISTATUS>>;
+  };
+
   const [tags, setTags] = useState({});
   const [formId, setFormId] = React.useState("");
   const [tagname, setTagName] = React.useState("");
@@ -41,6 +57,15 @@ const Dataentriescreate = () => {
   const [choices, setChoices] = useState([]);
   const [value, setValue] = useState(0);
   const [note, setNotes] = useState("");
+
+  useEffect(() => {
+    setTags(dataentrydata?.tags);
+    setNotes(dataentrydata?.note as string);
+    setFormId(dataentrydata?.formId as string);
+    dispatch(fetchForm({ id: dataentrydata?.formId }));
+  }, [dataentrydata]);
+
+  const { updateData } = useUpdateResource();
 
   const handleTagChange = (event: SelectChangeEvent) => {
     setTags({ ...tags, [event.target.value]: "" });
@@ -59,29 +84,28 @@ const Dataentriescreate = () => {
     setFormId(event.target.value);
   };
 
-  const formsStatus = useAppSelector((state) => state.forms.status);
+  useGetAllResource(fetchForms());
+  useGetAllResource(fetchAllData());
 
-  useEffect(() => {
-    dispatch(fetchForms());
-    dispatch(fetchAllData());
-  }, [dispatch]);
-
-  const [addRequestStatus, setAddRequestStatus] = useState("idle");
-
-  const canSave = [formId, tags].every(Boolean) && addRequestStatus === "idle";
+  const canSave = [formId, tags].every(Boolean);
   const navigate = useNavigate();
-
-  const { initCreateData } = useCreateResource();
 
   const onSaveFormClicked = async () => {
     const date = new Date().toJSON().slice(0, 10);
-    if (formsStatus == "failed") {
+    if (requestStatus == APISTATUS.ERROR) {
       alert("503 Service unavialable. Connect server to make a request.");
     }
     if (canSave) {
       try {
-        setAddRequestStatus("pending");
-        initCreateData(createDataAPI({ formId, date, tags, value, note }));
+        updateData(
+          updateDataEntryAPI(dataentrydata?.id, {
+            formId,
+            date,
+            tags,
+            value,
+            note,
+          })
+        );
         setTags({});
         setValue(0);
         setChoices([]);
@@ -93,15 +117,13 @@ const Dataentriescreate = () => {
       } catch (err) {
         console.error("Failed to save the data: ", err);
       } finally {
-        setAddRequestStatus("idle");
+        setRequestStatus(APISTATUS.IDLE);
       }
     }
   };
 
   const forms = useAppSelector(getForms);
   const form = useAppSelector(getForm) as Form;
-  const data = useAppSelector(getAllData);
-  const tagdata = useAppSelector(getDataTags);
 
   const getChoices = (tagName: string) => {
     form?.tags?.map(
@@ -112,7 +134,7 @@ const Dataentriescreate = () => {
   return (
     <div className="Formcreate">
       <Paper className=" border-4 border-dotted shadow-none outline-none p-2 flex flex-col gap-4">
-        <div className="FormTitle">CREATE DATA</div>
+        <div className="FormTitle">EDIT DATA</div>
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="demo-simple-select-standard-label">
             Select Form Schema
@@ -125,11 +147,7 @@ const Dataentriescreate = () => {
             label="selectFormSchema"
           >
             {forms.map((item, index) => {
-              return (
-                <MenuItem value={item?.id} key={index}>
-                  {item?.name}
-                </MenuItem>
-              );
+              return <MenuItem value={item?.id}>{item?.name}</MenuItem>;
             })}
           </Select>
         </FormControl>
@@ -157,7 +175,11 @@ const Dataentriescreate = () => {
                 onChange={handleTagChange}
               >
                 {form?.tags?.map((item, index) => {
-                  return <MenuItem value={item?.name}>{item?.name}</MenuItem>;
+                  return (
+                    <MenuItem value={item?.name} key={index}>
+                      {item?.name}
+                    </MenuItem>
+                  );
                 })}
               </Select>
             </FormControl>
@@ -217,7 +239,7 @@ const Dataentriescreate = () => {
             onChange={(e) => setValue(parseInt(e.target.value))}
             value={value}
             type={"number"}
-            label={"Value"}
+            label={"Value"} //optional
           />
         </div>
         {formId != "" && <Button onClick={onSaveFormClicked}>Submit</Button>}
@@ -226,4 +248,4 @@ const Dataentriescreate = () => {
   );
 };
 
-export default Dataentriescreate;
+export default Dataentriesedit;

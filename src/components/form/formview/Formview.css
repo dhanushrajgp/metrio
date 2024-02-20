@@ -11,18 +11,30 @@
     flex-direction: column;
     align-items: start;
     justify-content: start;
-    gap: 5px;
+    gap: 50px;
     border: none;
+    
 }
 .FormTitle{
     width: auto;
     height: 100%;
     font-size: x-large;
     font-weight: 600; 
+    color: rgb(2, 110, 204) ;
+    text-align: center;
+    margin: auto 20px;
 }
 .FormValue{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
+    font-size: xx-large;
+    margin-bottom: 20px;
+    background-color:rgb(2, 110, 204)  ;
+    color: whitesmoke;
+    text-align: center;
 }
 
 

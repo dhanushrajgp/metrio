@@ -42,7 +42,7 @@ export default function Navbar(props: Props) {
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <List>
         <Typography variant="h6" sx={{ my: 2 }}>
-          MUI
+          Metrio Lite
         </Typography>
         <Divider />
         {navItems.map((item, index) => (
@@ -75,7 +75,7 @@ export default function Navbar(props: Props) {
           >
             <MenuIcon />
           </IconButton>
-          <Link to="/">MUI</Link>
+          <Link to="/">Metrio Lite</Link>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item, index) => (
               <Link key={index} to={item?.path}>

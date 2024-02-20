@@ -1,16 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import "./Formcreate.css";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../reduxstore/hooks/hooks";
-import {
-  addNewForm,
-  getFormsLength,
-} from "../../../reduxstore/features/forms/formsSlice";
+import { useAppSelector } from "../../../reduxstore/hooks/hooks";
 import { Button, Paper, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Close } from "@mui/icons-material";
+import { createFormAPI } from "../../../api/formsapi";
+import { useCreateResource } from "../../../hooks/useCreateResource";
 
 interface MyObject {
   [key: string]: string[];
@@ -27,15 +22,10 @@ const Formcreate = () => {
   const [tagName, setTagName] = useState("");
   const [tagSelected, setTagSelected] = useState("");
   const [choiceName, setChoiceName] = useState("");
-
   const [addRequestStatus, setAddRequestStatus] = useState("idle");
-  const formsStatus = useAppSelector((state) => state.forms.status);
-  const dispatch = useAppDispatch();
-  const length = useAppSelector(getFormsLength);
-  const id = (length + 1).toString();
 
-  const canSave =
-    [name, tags].every(Boolean) && addRequestStatus === "idle";
+  const formsStatus = useAppSelector((state) => state.forms.status);
+  const canSave = [name, tags].every(Boolean) && addRequestStatus === "idle";
   const navigate = useNavigate();
 
   const handleObjectToArray = () => {
@@ -49,17 +39,17 @@ const Formcreate = () => {
     return tagArray;
   };
 
+  const { initCreateData } = useCreateResource();
+
   const onSaveFormClicked = async () => {
     const tagArray = handleObjectToArray();
-    if(formsStatus == "failed"){
-      alert("503 Service unavialable. Connect server to make a request.")
+    if (formsStatus == "failed") {
+      alert("503 Service unavialable. Connect server to make a request.");
     }
     if (canSave) {
       try {
         setAddRequestStatus("pending");
-        await dispatch(addNewForm({ name, tags: tagArray })).unwrap();
-        setName("");
-        setTags([]);
+        initCreateData(createFormAPI({ name, tags: tagArray }));
         navigate("/");
       } catch (err) {
         console.error("Failed to save the form: ", err);
@@ -76,24 +66,24 @@ const Formcreate = () => {
   const handleAddChoices = () => {
     setTagNames({
       ...tagNames,
-      [tagName]: [...(tagNames[tagName] || []), choiceName],
+      [tagSelected]: [...(tagNames[tagName] || []), choiceName],
     });
   };
 
   return (
     <div className="Formcreate">
       <Paper className=" border-4 border-dotted shadow-none outline-none p-2 flex flex-col gap-4">
-        <h2>Create Form</h2>
+        <div className="FormTitle">CREATE FORM SCHEMA</div>
         <TextField
           onChange={(e) => setName(e.target.value)}
           value={name}
-          label={"Name"} //optional
+          label={"Name"}
         />
 
         <TextField
           onChange={(e) => setTagName(e.target.value)}
           value={tagName}
-          label={"TagName"} //optional
+          label={"TagName"}
         />
         {tagName != "" ? (
           <Button onClick={handleAddTags}>Add Tags</Button>
@@ -112,7 +102,7 @@ const Formcreate = () => {
                   item == tagSelected
                     ? "bg-black text-white"
                     : "text-black bg-white border border-black"
-                } cursor-pointer p-2 h-12 flex w-auto rounded-md`}
+                } cursor-pointer p-2 h-10 flex w-auto rounded-md`}
                 onClick={() => {
                   setTagSelected(item);
                 }}
@@ -149,7 +139,7 @@ const Formcreate = () => {
             return (
               <div
                 className={`tags  text-black bg-white border border-black
-                } cursor-pointer p-2 h-12 flex w-auto rounded-md`}
+                } cursor-pointer p-2 h-10 flex w-auto rounded-md`}
               >
                 {item}
                 <div
@@ -157,10 +147,9 @@ const Formcreate = () => {
                     const updatedArray = tagNames?.[tagSelected]?.filter(
                       (currentItem) => currentItem != item
                     );
-                    console.log("updatedArray", updatedArray);
                     setTagNames({
                       ...tagNames,
-                      [tagName]: updatedArray,
+                      [tagSelected]: updatedArray,
                     });
                   }}
                 >
@@ -170,10 +159,9 @@ const Formcreate = () => {
             );
           })}
         </div>
-          {
-            name != "" && Object.keys(tagNames).length > 0 &&   <Button onClick={onSaveFormClicked}>Submit</Button>
-          }
-       
+        {name != "" && Object.keys(tagNames).length > 0 && (
+          <Button onClick={onSaveFormClicked}>Submit</Button>
+        )}
       </Paper>
     </div>
   );

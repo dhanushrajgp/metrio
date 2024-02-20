@@ -15,6 +15,6 @@ export interface DataEntries{
     formId:number | string;
     date: string;
     note?: string;
-    tags:object;
+    tags:{[key:string]:string};
     value:number;
 }

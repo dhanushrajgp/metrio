@@ -6,10 +6,9 @@ import {
   useAppSelector,
 } from "../../../reduxstore/hooks/hooks";
 import {
-  deleteDataEntry,
-  deleteForm,
   fetchDataEntries,
   fetchForm,
+  formDeleted,
   getDataEntries,
 } from "../../../reduxstore/features/forms/formsSlice";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -18,6 +17,12 @@ import Edit from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DataEntries } from "../../../types/forms";
 import { useNavigate } from "react-router-dom";
+import {
+  deleteDataEntryAPI,
+  fetchFormDataEntriesAPI,
+} from "../../../api/dataentriesapi";
+import { useResource } from "../../../hooks/useResource";
+import { deleteFormAPI} from "../../../api/formsapi";
 
 const Formcard = ({
   formName,
@@ -29,31 +34,35 @@ const Formcard = ({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const getFormDetails = useCallback(() => {
+    localStorage.setItem("formId", JSON.stringify({ id: id }));
     dispatch(fetchForm({ id }));
     dispatch(fetchDataEntries({ formId: id }));
     navigate("/viewform");
   }, [dispatch]);
 
-  const getdataentries = useAppSelector(getDataEntries);
-
-  const deleteFormCard = () => {
-    dispatch(fetchDataEntries({ formId: id }));
-    getdataentries.forEach((item) => {
-      dispatch(deleteDataEntry({ id: item?.id }));
-    });
-    dispatch(deleteForm({ id }));
+ 
+  const { data } = useResource(fetchFormDataEntriesAPI(id)) as unknown as {
+    data: DataEntries[];
   };
 
-  const editFormCard = useCallback(()=>{
-    localStorage.setItem("formId",JSON.stringify({id: id}));
+  const deleteFormCard = () => {
+    data.forEach((item) => {
+      deleteDataEntryAPI(item?.id);
+    });
+    deleteFormAPI(id);
+    dispatch(formDeleted({id}));
+
+  };
+
+  const editFormCard = useCallback(() => {
+    localStorage.setItem("formId", JSON.stringify({ id: id }));
     dispatch(fetchForm({ id: id }));
     navigate(`/editform`);
-  },[dispatch]);
-
+  }, [dispatch]);
 
   return (
     <div className="card-container">
-      <div className="card" onClick={getFormDetails}>
+      <div className="card" >
         <img
           src={formimage}
           alt="balloon with an emoji face"
@@ -81,7 +90,7 @@ const Formcard = ({
         >
           <Edit />
         </span>
-        <span className="card__action3">
+        <span className="card__action3" onClick={getFormDetails}>
           <VisibilityIcon />
         </span>
       </div>
