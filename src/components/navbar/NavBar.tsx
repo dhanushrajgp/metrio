@@ -80,6 +80,7 @@ export default function Navbar(props: Props) {
             {navItems.map((item, index) => (
               <Link key={index} to={item?.path}>
                 <Button sx={{ color: "#fff" }}>{item?.title}</Button>
+                
               </Link>
             ))}
           </Box>

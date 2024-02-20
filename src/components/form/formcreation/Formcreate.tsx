@@ -66,7 +66,7 @@ const Formcreate = () => {
   const handleAddChoices = () => {
     setTagNames({
       ...tagNames,
-      [tagSelected]: [...(tagNames[tagName] || []), choiceName],
+      [tagSelected]: [...(tagNames[tagSelected] || []), choiceName],
     });
   };
 
